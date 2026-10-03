@@ -33,7 +33,7 @@ h1{font-size:24px;margin:0 0 5px}.lead{color:var(--sub);font-size:13px;margin:0 
   <div id="check" class="panel check">
     <h1 style="font-size:18px">検算欄</h1>
     <div id="checkGrid" class="check-grid"></div>
-    <div class="btns"><button onclick="showSheet()">A4鑑定書を表示</button><button class="print" onclick="openPrintView()">印刷／PDF保存</button></div>
+    <div class="btns"><button onclick="showSheet()">A4鑑定書を表示</button><button class="print" onclick="saveAsImage()">鑑定書を画像で保存</button></div>
   </div>
 </div>
 <div class="sheet-wrap"><section id="sheet" class="sheet"></section></div>
@@ -88,20 +88,31 @@ function renderSheet(d){const mpos=[d.positions.m1,d.positions.m2,d.positions.m3
  <div class="brand"><div class="qrs"><div class="qr-card"><div class="qr-title">ゆきこ</div><div class="qr-pair"><img class="qr-character yukiko" src="YUKIKO.PNG" alt="ゆきこ"><div class="qr-crop"><img src="QR_YUKIKO.jpg" alt="ゆきこ Instagram QR"></div></div><span class="handle">@YUKIKO_1884</span></div><div class="qr-card"><div class="qr-title">369イベント</div><div class="qr-pair"><img class="qr-character mid" src="MIROKUMAN.PNG" alt="みろくまん"><div class="qr-crop"><img src="QR_369.jpg" alt="369EVENT Instagram QR"></div></div><span class="handle">@369EVENT</span></div><div class="qr-card"><div class="qr-title">うめこ</div><div class="qr-pair"><img class="qr-character" src="UMEKO.PNG" alt="うめこ"><div class="qr-crop"><img src="QR_UMEKO.jpg" alt="うめこ Instagram QR"></div></div><span class="handle">@UMEKO.DAYO</span></div></div><div class="notes">数秘運気は、みろく流固定式（誕生日起点・日付全桁を一括加算・11/22採用）で算出。九星気学は立春・各月の節入りを基準にしています。占術上の傾向をもとにした鑑定であり、未来の出来事を保証するものではありません。</div></div>`;
 }
 function showSheet(){document.getElementById('sheet').classList.add('show');document.getElementById('sheet').scrollIntoView({behavior:'smooth'});}
-function openPrintView(){
-  if(!window.reading){alert('先に鑑定書を作ってな');return;}
-  const sheet=document.getElementById('sheet');
-  sheet.classList.add('show');
-  // iPhoneでは現在ページの window.print() が効かない環境があるため、
-  // ユーザー操作の瞬間に印刷専用タブを開く。
-  const w=window.open('', '_blank');
-  if(!w){alert('印刷画面を開けへんかった。Safariのポップアップ許可を確認してな。');return;}
-  const styles=[...document.querySelectorAll('style')].map(x=>x.textContent).join('\n');
-  const base=new URL('.', location.href).href;
-  w.document.open();
-  w.document.write(`<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><base href="${base}"><title>みろく流 2027年運気鑑定書</title><style>${styles}
-html,body{background:#fff!important;margin:0!important;padding:0!important}.app{display:none!important}.sheet-wrap{display:block!important;width:210mm!important;margin:0 auto!important;padding:0!important;overflow:visible!important}.sheet{display:block!important;width:210mm!important;height:297mm!important;min-height:297mm!important;margin:0!important;box-shadow:none!important;transform:none!important;zoom:1!important}.printbar{position:sticky;top:0;z-index:9999;padding:10px;background:#fff;border-bottom:1px solid #ddd;text-align:center}.printbar button{font-size:16px;padding:12px 22px;border:0;border-radius:999px;background:#356b52;color:#fff;font-weight:800}@media print{.printbar{display:none!important}}@media screen and (max-width:800px){.sheet-wrap{width:210mm!important;transform-origin:top left;transform:scale(calc((100vw - 16px) / 793.7));margin:8px!important}.sheet{display:block!important}}<\/style></head><body><div class="printbar"><button onclick="window.print()">この鑑定書を印刷／PDF保存</button><div style="font:12px sans-serif;margin-top:5px">iPhoneは印刷画面で共有からPDF保存もできるで</div></div><div class="sheet-wrap">${sheet.outerHTML}</div></body></html>`);
-  w.document.close();
+function loadImg(src){return new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>resolve(im);im.onerror=reject;im.src=src;});}
+function roundRect(ctx,x,y,w,h,r,fill,stroke){ctx.beginPath();ctx.roundRect(x,y,w,h,r);if(fill){ctx.fillStyle=fill;ctx.fill();}if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=2;ctx.stroke();}}
+function wrapLines(ctx,text,maxWidth){const out=[];for(const para of String(text).split('\n')){let line='';for(const ch of para){const test=line+ch;if(ctx.measureText(test).width>maxWidth&&line){out.push(line);line=ch}else line=test;}if(line)out.push(line);}return out;}
+function drawWrapped(ctx,text,x,y,maxWidth,lineHeight,maxLines=99){const lines=wrapLines(ctx,text,maxWidth).slice(0,maxLines);lines.forEach((l,i)=>ctx.fillText(l,x,y+i*lineHeight));return y+lines.length*lineHeight;}
+function fitContain(ctx,img,x,y,w,h){const r=Math.min(w/img.width,h/img.height),dw=img.width*r,dh=img.height*r;ctx.drawImage(img,x+(w-dw)/2,y+h-dh,dw,dh);}
+function drawQrCrop(ctx,img,x,y,size){/* 元Instagram QR画像のQR本体だけを使用 */const sx=img.width*.255,sy=img.height*.105,sw=img.width*.49,sh=img.height*.49;ctx.fillStyle='#fff';ctx.fillRect(x,y,size,size);ctx.drawImage(img,sx,sy,sw,sh,x,y,size,size);}
+async function saveAsImage(){
+ if(!window.reading){alert('先に鑑定書を作ってな');return;}
+ const d=window.reading,W=2480,H=3508,c=document.createElement('canvas');c.width=W;c.height=H;const ctx=c.getContext('2d');
+ ctx.fillStyle='#fffdf8';ctx.fillRect(0,0,W,H);ctx.textBaseline='top';ctx.fillStyle='#352d2a';
+ const font=(size,weight=400)=>`${weight} ${size}px -apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif`;
+ const left=145,right=W-145,content=right-left;
+ ctx.textAlign='center';ctx.font=font(28,800);ctx.fillStyle='#b98b3f';ctx.fillText('MIROKU STYLE',W/2,110);ctx.font=font(72,900);ctx.fillStyle='#352d2a';ctx.fillText('2027年 運気鑑定書',W/2,160);ctx.font=font(34,500);ctx.fillStyle='#766a64';ctx.fillText(`${d.name} 様　｜　数秘運気 × 九星気学（${starNames[d.star]}）`,W/2,255);
+ ctx.strokeStyle='#b98b3f';ctx.lineWidth=6;ctx.beginPath();ctx.moveTo(left,315);ctx.lineTo(right,315);ctx.stroke();
+ const year=combine(d.annual1,d.positions.year);roundRect(ctx,left,350,content,210,38,'#f7f1e8');ctx.font=font(58,900);ctx.fillStyle='#352d2a';ctx.fillText(`「${year.title}。」`,W/2,390);ctx.font=font(29,500);ctx.fillStyle='#766a64';ctx.fillText(`数秘 ${d.annual1}${d.annual1!==d.annual2?` → ${d.bm}/${d.bd}から${d.annual2}`:''}　×　九星 ${palaceNames[d.positions.year]}`,W/2,480);
+ ctx.textAlign='left';ctx.fillStyle='#352d2a';ctx.font=font(39,800);ctx.fillText('2027年のあなた',left,610);ctx.font=font(30,400);let y=665;y=drawWrapped(ctx,annualText(d),left,y,content,48,5)+30;
+ const mpos=[d.positions.m1,d.positions.m2,d.positions.m3], ms=d.months.map((n,i)=>combine(n,mpos[i],true));const gap=24,bw=(content-gap*2)/3,bh=650;
+ for(let i=0;i<3;i++){const x=left+i*(bw+gap);roundRect(ctx,x,y,bw,bh,34,'#fff','#e7ddd2');ctx.font=font(34,800);ctx.fillStyle='#352d2a';ctx.fillText(`${i+1}月｜数秘【${d.months[i]}】`,x+28,y+28);ctx.font=font(27,700);ctx.fillText(`× ${palaceNames[mpos[i]]}`,x+28,y+78);ctx.font=font(31,900);ctx.fillText(`「${ms[i].title}」`,x+28,y+132);ctx.font=font(25,400);drawWrapped(ctx,ms[i].text,x+28,y+190,bw-56,39,9);ctx.font=font(24,800);ctx.fillStyle='#6d8c66';drawWrapped(ctx,ms[i].one,x+28,y+555,bw-56,35,2);}
+ y+=bh+34;roundRect(ctx,left,y,content,245,24,'#fff7f5');ctx.fillStyle='#e7a6aa';ctx.fillRect(left,y,14,245);ctx.fillStyle='#352d2a';ctx.font=font(38,900);ctx.fillText('みろく流からひと言',left+45,y+30);ctx.font=font(29,500);drawWrapped(ctx,`${ms[0].title} → ${ms[1].title} → ${ms[2].title}。数字と九星の両方を「当てるため」やなく、2027年をどう使うかの作戦として持っといてな。`,left+45,y+90,content-80,44,3);
+ y+=285;ctx.strokeStyle='#e7ddd2';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(right,y);ctx.stroke();y+=32;
+ const [yu,mi,um,qy,q369,qu]=await Promise.all([loadImg('YUKIKO.PNG'),loadImg('MIROKUMAN.PNG'),loadImg('UMEKO.PNG'),loadImg('QR_YUKIKO.jpg'),loadImg('QR_369.jpg'),loadImg('QR_UMEKO.jpg')]);
+ const cards=[['ゆきこ','@YUKIKO_1884',yu,qy],['369イベント','@369EVENT',mi,q369],['うめこ','@UMEKO.DAYO',um,qu]];const cw=(content-gap*2)/3,ch=610;
+ for(let i=0;i<3;i++){const x=left+i*(cw+gap);roundRect(ctx,x,y,cw,ch,28,'#fffaf2','#ead8bd');ctx.textAlign='center';ctx.font=font(27,900);ctx.fillStyle='#352d2a';ctx.fillText(cards[i][0],x+cw/2,y+22);fitContain(ctx,cards[i][2],x+25,y+70,cw-50,245);const qs=190;drawQrCrop(ctx,cards[i][3],x+(cw-qs)/2,y+325,qs);ctx.font=font(23,800);ctx.fillStyle='#5f5148';ctx.fillText(cards[i][1],x+cw/2,y+535);}
+ ctx.textAlign='center';ctx.font=font(18,400);ctx.fillStyle='#7d736d';drawWrapped(ctx,'数秘運気は、みろく流固定式（誕生日起点・日付全桁を一括加算・11/22採用）で算出。九星気学は立春・各月の節入りを基準にしています。占術上の傾向をもとにした鑑定であり、未来の出来事を保証するものではありません。',W/2,y+630,content,29,3);
+ const url=c.toDataURL('image/png');const old=document.getElementById('savePreview');if(old)old.remove();const box=document.createElement('div');box.id='savePreview';box.style.cssText='position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.78);padding:18px;overflow:auto;text-align:center';const safe=(d.name||'鑑定書').replace(/[\\/:*?"<>|]/g,'_');box.innerHTML=`<div style="max-width:560px;margin:auto;background:white;border-radius:18px;padding:14px"><b style="font-size:18px">鑑定書できたで ✨</b><p style="font-size:13px;color:#665;margin:6px 0 12px">iPhoneは画像を長押し→「写真に保存」でOK。下のボタンでも保存を試せるで。</p><img src="${url}" style="width:100%;height:auto;border:1px solid #ddd"><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px"><a href="${url}" download="MIROKU_2027_${safe}.png" style="background:#356b52;color:white;text-decoration:none;padding:12px 18px;border-radius:999px;font-weight:800">PNGを保存</a><button onclick="document.getElementById('savePreview').remove()" style="background:#eee5db;color:#352d2a">閉じる</button></div></div>`;document.body.appendChild(box);
 }
 function esc(s){return s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function loadUmeko(){document.getElementById('name').value='うめこ';document.getElementById('birth').value='1976-10-15';document.getElementById('override').value='6';makeReading();}
