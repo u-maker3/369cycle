@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>みろく流｜2027年 運気鑑定書製造機</title>
+<style>
+:root{--ink:#352d2a;--sub:#766a64;--paper:#fffdf8;--line:#e7ddd2;--gold:#b98b3f;--green:#6d8c66;--pink:#e7a6aa;--bg:#f5efe8}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(145deg,#f8f1e8,#f2eee8);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif;color:var(--ink)}
+.app{max-width:760px;margin:auto;padding:18px}.panel{background:#fff;border:1px solid var(--line);border-radius:22px;padding:20px;box-shadow:0 10px 30px rgba(70,50,30,.08);margin-bottom:16px}
+h1{font-size:24px;margin:0 0 5px}.lead{color:var(--sub);font-size:13px;margin:0 0 18px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field label{display:block;font-weight:700;font-size:13px;margin-bottom:6px}.field input,.field select{width:100%;font-size:16px;padding:13px;border:1px solid #d8cec5;border-radius:12px;background:white}.wide{grid-column:1/-1}.btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}button{border:0;border-radius:999px;padding:13px 18px;font-weight:800;font-size:15px;background:var(--ink);color:white}button.alt{background:#eee5db;color:var(--ink)}button.print{background:var(--green)}
+.check{display:none}.check.show{display:block}.check-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.chip{background:#f7f2ec;border-radius:12px;padding:10px;font-size:13px}.warn{background:#fff4d8;border:1px solid #ecd18d;padding:10px;border-radius:12px;font-size:12px;margin-top:10px}
+.sheet{display:none;background:var(--paper);width:210mm;min-height:297mm;margin:20px auto;padding:11mm 12mm 9mm;box-shadow:0 15px 50px rgba(0,0,0,.15);position:relative}.sheet.show{display:block}.sheet-head{text-align:center;border-bottom:2px solid var(--gold);padding-bottom:6px}.sheet-head .kicker{font-size:10px;letter-spacing:.15em;color:var(--gold);font-weight:800}.sheet-head h2{font-size:23px;margin:3px 0}.person{font-size:12px;color:var(--sub)}
+.hero{margin:8px 0 7px;padding:9px 12px;background:#f7f1e8;border-radius:14px;text-align:center}.hero .theme{font-size:20px;font-weight:900}.hero .meta{font-size:10px;color:var(--sub);margin-top:3px}.annual{font-size:11.2px;line-height:1.65;margin:6px 1px}.annual strong{font-size:12px}.months{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:8px}.month{border:1px solid var(--line);border-radius:13px;padding:8px;background:white;min-height:105px}.month h3{font-size:13px;margin:0 0 3px}.month .mtheme{font-weight:900;font-size:12px;margin-bottom:4px}.month p{font-size:9.8px;line-height:1.55;margin:0}.one{font-size:9px;font-weight:800;color:var(--green);margin-top:5px}.final{margin-top:8px;border-left:4px solid var(--pink);padding:7px 10px;background:#fff7f5;border-radius:0 10px 10px 0}.final h3{font-size:12px;margin:0 0 3px}.final p{font-size:10.5px;line-height:1.5;margin:0}
+.brand{margin-top:8px;border-top:1px solid var(--line);padding-top:6px}.characters{display:flex;justify-content:center;align-items:end;gap:10px;height:53px}.characters img{max-height:52px;max-width:58px;object-fit:contain}.characters img.mid{max-height:56px}.qrs{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:4px}.qr-card{text-align:center;border:1px solid var(--line);border-radius:9px;padding:3px;background:#fff}.qr-card img{width:28mm;height:23mm;object-fit:contain;display:block;margin:auto}.qr-card span{font-size:7px;font-weight:800}.notes{font-size:6.8px;color:#7d736d;line-height:1.35;margin-top:5px;text-align:center}
+@media(max-width:800px){.grid{grid-template-columns:1fr}.sheet{width:100%;min-height:auto;padding:18px;box-shadow:none}.months{grid-template-columns:1fr}.qrs{grid-template-columns:repeat(3,1fr)}.qr-card img{width:100%;height:auto}.sheet-wrap{overflow:auto}.annual{font-size:13px}.month p{font-size:12px}}
+@page{size:A4 portrait;margin:0}@media print{body{background:white}.app{display:none!important}.sheet{display:block!important;box-shadow:none;margin:0;width:210mm;height:297mm;min-height:297mm;overflow:hidden;page-break-after:avoid}.no-print{display:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="panel">
+    <h1>みろく流｜2027年 運気鑑定書製造機</h1>
+    <p class="lead">名前と生年月日から、みろく流固定式の数秘運気＋九星気学を組み合わせてA4鑑定書を作成。</p>
+    <div class="grid">
+      <div class="field"><label>お名前</label><input id="name" placeholder="例：うめこ"></div>
+      <div class="field"><label>生年月日</label><input id="birth" type="date"></div>
+      <div class="field wide"><label>本命星の手動補正（通常は自動）</label><select id="override"><option value="">自動判定</option><option value="1">一白水星</option><option value="2">二黒土星</option><option value="3">三碧木星</option><option value="4">四緑木星</option><option value="5">五黄土星</option><option value="6">六白金星</option><option value="7">七赤金星</option><option value="8">八白土星</option><option value="9">九紫火星</option></select></div>
+    </div>
+    <div class="btns"><button onclick="makeReading()">2027年鑑定書を作る</button><button class="alt" onclick="loadUmeko()">うめこで検算</button></div>
+    <div id="boundaryWarn" class="warn" style="display:none"></div>
+  </div>
+  <div id="check" class="panel check">
+    <h1 style="font-size:18px">検算欄</h1>
+    <div id="checkGrid" class="check-grid"></div>
+    <div class="btns"><button onclick="showSheet()">A4鑑定書を表示</button><button class="print" onclick="window.print()">印刷／PDF保存</button></div>
+  </div>
+</div>
+<div class="sheet-wrap"><section id="sheet" class="sheet"></section></div>
+<script>
+const starNames=['','一白水星','二黒土星','三碧木星','四緑木星','五黄土星','六白金星','七赤金星','八白土星','九紫火星'];
+const palaceNames={C:'中宮',N:'北・坎宮',SW:'南西・坤宮',E:'東・震宮',SE:'南東・巽宮',NW:'北西・乾宮',W:'西・兌宮',NE:'北東・艮宮',S:'南・離宮'};
+// 九星の後天定位に基づく遁甲順：中宮→北西→西→北東→南→北→南西→東→南東
+const palaceCycle=['C','NW','W','NE','S','N','SW','E','SE'];
+const fixedStarAtCycle=[5,6,7,8,9,1,2,3,4];
+function posForStar(star, center){const idx=(star-center+9)%9;return palaceCycle[idx];}
+function reduceMiroku(n){while(n>9 && n!==11 && n!==22){n=String(n).split('').reduce((a,b)=>a+Number(b),0)}return n}
+function digits(n){return String(n).replace(/\D/g,'').split('').reduce((a,b)=>a+Number(b),0)}
+function cycleForStart(y,m,d){return reduceMiroku(digits(`${y}${String(m).padStart(2,'0')}${String(d).padStart(2,'0')}`))}
+function monthCycleForStart(y,m,d,targetMonth){return reduceMiroku(digits(`${y}${String(m).padStart(2,'0')}${String(d).padStart(2,'0')}`)+targetMonth)}
+function digitalRoot(n){while(n>9)n=String(n).split('').reduce((a,b)=>a+Number(b),0);return n}
+function honmeiFromYear(y){let r=digitalRoot(y),v=11-r;if(v===10)v=1;if(v===0)v=9;return v}
+function honmei(birth){const [y,m,d]=birth.split('-').map(Number);let useY=y;let ambiguous=false;
+  // 年界は立春。日付だけでは2/3・2/4生まれを年によって厳密判定できないため手動確認。
+  if(m===1 || (m===2&&d<=2)) useY=y-1;
+  else if(m===2&&(d===3||d===4)){ambiguous=true;useY=y-1;}
+  return {star:honmeiFromYear(useY),ambiguous,useY};
+}
+const numTheme={1:['始める','自分で決めて、小さくても一歩を出す。'],2:['育てる','急いで答えを出さず、人や物事との関係を育てる。'],3:['表現する','話す・見せる・楽しむ。外へ出すほど流れが動く。'],4:['固める','足元、仕組み、習慣を整えて続く形にする。'],5:['変える','固まりすぎず、試しながら動いて経験値を増やす。'],6:['整える','大切な人・仕事・暮らしに手をかけ、責任の持ち方を整える。'],7:['深める','広げるより掘る。学び、考え、自分の答えを育てる。'],8:['形にする','積み上げたものを成果・実績・現実へつなげる。'],9:['終わらせる','役目を終えたものを整理して、次のための場所を空ける。'],11:['受け取る','直感や気づきを急いで結論にせず、まず拾って確かめる。'],22:['築く','理想を夢のままにせず、長く残る具体的な形へ落とし込む。']};
+const palaceTheme={C:['総点検','外へ広げる前に、自分の現在地と軸を確認する。'],N:['静かに整える','無理に前へ出ず、準備・休養・見直しに時間を使う。'],SW:['土台を育てる','派手さより日々の積み重ね。続けられる形を作る。'],E:['動き出す','考えるだけで終わらせず、小さく始めて流れを作る。'],SE:['ご縁を育てる','人とのやり取り、信用、紹介や調整を丁寧に。'],NW:['決める','責任を引き受けるものを選び、自分で決断する。'],W:['受け取る','成果や喜びを味わい、人との交流も楽しむ。'],NE:['切り替える','惰性を見直し、終えるものと変えるものを整理する。'],S:['明らかにする','見えてきたことを言葉にし、伝えるものを明確にする。']};
+function combine(n,p,monthly=false){const nt=numTheme[n]||numTheme[reduceMiroku(n)], pt=palaceTheme[p];
+ const title = monthly ? `${nt[0]} × ${pt[0]}` : `${nt[0]}、そして${pt[0]}`;
+ let text=`数秘は【${n}】。「${nt[0]}」がテーマ。${nt[1]} 九星では【${palaceNames[p]}】。${pt[1]}`;
+ if(n===1&&p==='NW') text+=' 今回は「誰かが決めるのを待つ」より、自分で決めて動くほど二つの流れが噛み合う。';
+ if(n===9&&p==='C') text+=' 新しいものを足す前に、終わったものを一つ片づけると次の余白ができる。';
+ if(n===2&&p==='W') text+=' ひとりで押し切るより、人と話しながら楽しんで育てる方へ。';
+ return {title,text,one:`今月の一手：${monthly?nt[0]:'焦点を一つ決める'}。`};}
+function activeStartForDate(birth,targetY,targetM,targetD=1){const [by,bm,bd]=birth.split('-').map(Number);let sy=targetY;
+  const beforeBirthday=(targetM<bm)||(targetM===bm&&targetD<bd); if(beforeBirthday)sy=targetY-1; return {y:sy,m:bm,d:bd};}
+function makeReading(){const name=document.getElementById('name').value.trim()||'お客さま';const birth=document.getElementById('birth').value;if(!birth){alert('生年月日を入れてな');return}
+ const [by,bm,bd]=birth.split('-').map(Number);const h=honmei(birth);const ov=Number(document.getElementById('override').value)||0;const star=ov||h.star;
+ const startJan=activeStartForDate(birth,2027,1,1);const startDec=activeStartForDate(birth,2027,12,31);const annual1=cycleForStart(startJan.y,bm,bd);const annual2=cycleForStart(startDec.y,bm,bd);
+ const months=[1,2,3].map(m=>{const s=activeStartForDate(birth,2027,m,1);return monthCycleForStart(s.y,bm,bd,m)});
+ // 2027: 九紫中宮。1月(小寒以降):六白中宮、2月:五黄中宮、3月:四緑中宮
+ const positions={year:posForStar(star,9),m1:posForStar(star,6),m2:posForStar(star,5),m3:posForStar(star,4)};
+ const data={name,birth,star,annual1,annual2,months,positions,bm,bd,h,override:!!ov};window.reading=data;renderCheck(data);renderSheet(data);
+ const w=document.getElementById('boundaryWarn');if(h.ambiguous&&!ov){w.style.display='block';w.innerHTML='⚠️ 2月3日・4日生まれは、出生年の立春日時との照合が必要やで。本命星は自動確定せず、資料確認後に「手動補正」で選んでな。';}else w.style.display='none';
+}
+function renderCheck(d){const c=document.getElementById('check');c.classList.add('show');const change=d.annual1===d.annual2?`${d.annual1}`:`${d.annual1} → ${d.bm}/${d.bd}から ${d.annual2}`;
+ document.getElementById('checkGrid').innerHTML=`<div class="chip"><b>本命星</b><br>${starNames[d.star]}</div><div class="chip"><b>数秘年運</b><br>${change}</div><div class="chip"><b>1〜3月</b><br>${d.months.join(' ／ ')}</div><div class="chip"><b>九星回座</b><br>年 ${palaceNames[d.positions.year]}<br>1月 ${palaceNames[d.positions.m1]} ／ 2月 ${palaceNames[d.positions.m2]} ／ 3月 ${palaceNames[d.positions.m3]}</div>`;c.scrollIntoView({behavior:'smooth'});}
+function annualText(d){const a=combine(d.annual1,d.positions.year);let txt=`2027年の前半は、${a.text}`;if(d.annual1!==d.annual2){const b=numTheme[d.annual2];txt+=` そして${d.bm}月${d.bd}日の誕生日から数秘運気は【${d.annual2}】へ。「${b[0]}」へ流れが切り替わる。${b[1]}`;}return txt;}
+function renderSheet(d){const mpos=[d.positions.m1,d.positions.m2,d.positions.m3];const monthLabels=['1月','2月','3月'];const ms=d.months.map((n,i)=>combine(n,mpos[i],true));const yearTheme=combine(d.annual1,d.positions.year).title;
+ document.getElementById('sheet').innerHTML=`<div class="sheet-head"><div class="kicker">MIROKU STYLE</div><h2>2027年 運気鑑定書</h2><div class="person">${esc(d.name)} 様　｜　数秘運気 × 九星気学（${starNames[d.star]}）</div></div>
+ <div class="hero"><div class="theme">「${yearTheme}。」</div><div class="meta">数秘 ${d.annual1}${d.annual1!==d.annual2?` → ${d.bm}/${d.bd}から${d.annual2}`:''}　×　九星 ${palaceNames[d.positions.year]}</div></div>
+ <div class="annual"><strong>2027年のあなた</strong><br>${annualText(d)}</div>
+ <div class="months">${ms.map((x,i)=>`<div class="month"><h3>${monthLabels[i]}｜数秘【${d.months[i]}】× ${palaceNames[mpos[i]]}</h3><div class="mtheme">「${x.title}」</div><p>${x.text}</p><div class="one">${x.one}</div></div>`).join('')}</div>
+ <div class="final"><h3>みろく流からひと言</h3><p><b>${ms[0].title}</b> → <b>${ms[1].title}</b> → <b>${ms[2].title}</b>。数字と九星の両方を「当てるため」やなく、2027年をどう使うかの作戦として持っといてな。</p></div>
+ <div class="brand"><div class="characters"><img src="YUKIKO.PNG" alt="ゆきこ"><img class="mid" src="MIROKUMAN.PNG" alt="みろくまん"><img src="UMEKO.PNG" alt="うめこ"></div><div class="qrs"><div class="qr-card"><img src="QR_YUKIKO.jpg"><span>YUKIKO</span></div><div class="qr-card"><img src="QR_369.jpg"><span>369 EVENT</span></div><div class="qr-card"><img src="QR_UMEKO.jpg"><span>UMEKO</span></div></div><div class="notes">数秘運気は、みろく流固定式（誕生日起点・日付全桁を一括加算・11/22採用）で算出。九星気学は立春・各月の節入りを基準にしています。占術上の傾向をもとにした鑑定であり、未来の出来事を保証するものではありません。</div></div>`;
+}
+function showSheet(){document.getElementById('sheet').classList.add('show');document.getElementById('sheet').scrollIntoView({behavior:'smooth'});}
+function esc(s){return s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function loadUmeko(){document.getElementById('name').value='うめこ';document.getElementById('birth').value='1976-10-15';document.getElementById('override').value='6';makeReading();}
+</script>
+</body></html>
