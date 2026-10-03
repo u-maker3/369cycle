@@ -14,7 +14,7 @@ h1{font-size:24px;margin:0 0 5px}.lead{color:var(--sub);font-size:13px;margin:0 
 .hero{margin:8px 0 7px;padding:9px 12px;background:#f7f1e8;border-radius:14px;text-align:center}.hero .theme{font-size:20px;font-weight:900}.hero .meta{font-size:10px;color:var(--sub);margin-top:3px}.annual{font-size:11.2px;line-height:1.65;margin:6px 1px}.annual strong{font-size:12px}.months{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:8px}.month{border:1px solid var(--line);border-radius:13px;padding:8px;background:white;min-height:105px}.month h3{font-size:13px;margin:0 0 3px}.month .mtheme{font-weight:900;font-size:12px;margin-bottom:4px}.month p{font-size:9.8px;line-height:1.55;margin:0}.one{font-size:9px;font-weight:800;color:var(--green);margin-top:5px}.final{margin-top:8px;border-left:4px solid var(--pink);padding:7px 10px;background:#fff7f5;border-radius:0 10px 10px 0}.final h3{font-size:12px;margin:0 0 3px}.final p{font-size:10.5px;line-height:1.5;margin:0}
 .brand{margin-top:8px;border-top:1px solid var(--line);padding-top:6px}.qrs{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:4px}.qr-card{text-align:center;border:1px solid #ead8bd;border-radius:14px;padding:5px 4px 6px;background:linear-gradient(180deg,#fffdf8,#fff8ee);box-shadow:0 2px 8px rgba(89,64,38,.07);overflow:hidden}.qr-card .qr-title{font-size:7.5px;font-weight:900;letter-spacing:.02em;margin-bottom:1px}.qr-pair{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:1.5mm;min-height:36mm}.qr-character{width:auto;height:22mm;max-width:30mm;object-fit:contain;object-position:center bottom;display:block}.qr-character.yukiko,.qr-character.mid{width:auto;height:22mm;max-width:30mm;transform:none;margin:0}.qr-crop{width:15.5mm;height:15.5mm;overflow:hidden;background:#fff;border-radius:5px;position:relative;flex:0 0 auto}.qr-crop img{position:absolute;width:30.8mm;height:auto;max-width:none;left:-7.75mm;top:-2.9mm;display:block}.qr-card .handle{display:block;font-size:6.4px;font-weight:800;white-space:nowrap;color:#5f5148;margin-top:1px}.notes{font-size:6.8px;color:#7d736d;line-height:1.35;margin-top:5px;text-align:center}
 @media(max-width:800px){.grid{grid-template-columns:1fr}.sheet-wrap{width:100%;overflow:hidden;padding:0 8px;box-sizing:border-box}.sheet{width:210mm;min-height:297mm;padding:12mm;box-shadow:none;zoom:calc((100vw - 16px) / 793.7);margin:12px 0 0 0}.months{grid-template-columns:repeat(3,1fr)}.qrs{grid-template-columns:repeat(3,1fr)}.qr-character,.qr-character.yukiko,.qr-character.mid{height:22mm;max-width:30mm}.qr-crop{width:15.5mm;height:15.5mm}.qr-crop img{width:30.8mm;left:-7.75mm;top:-2.9mm}.annual{font-size:9.4px}.month p{font-size:8.5px}}
-@media print{body{background:white}.app{display:none!important}.sheet{display:block!important;box-shadow:none;margin:0;width:210mm;height:297mm;min-height:297mm;overflow:hidden;page-break-after:avoid}.no-print{display:none!important}}
+@media print{html,body{width:210mm!important;margin:0!important;padding:0!important;background:white!important}.app{display:none!important}.sheet-wrap{width:210mm!important;overflow:visible!important;padding:0!important;margin:0!important}.sheet{display:block!important;box-shadow:none!important;margin:0!important;width:210mm!important;height:297mm!important;min-height:297mm!important;padding:11mm 12mm 9mm!important;overflow:hidden!important;page-break-after:avoid!important;zoom:1!important;transform:none!important}.no-print{display:none!important}}
 </style>
 </head>
 <body>
@@ -33,7 +33,7 @@ h1{font-size:24px;margin:0 0 5px}.lead{color:var(--sub);font-size:13px;margin:0 
   <div id="check" class="panel check">
     <h1 style="font-size:18px">検算欄</h1>
     <div id="checkGrid" class="check-grid"></div>
-    <div class="btns"><button onclick="showSheet()">A4鑑定書を表示</button><button class="print" onclick="window.print()">印刷／PDF保存</button></div>
+    <div class="btns"><button onclick="showSheet()">A4鑑定書を表示</button><button class="print" onclick="printSheet()">印刷／PDF保存</button></div>
   </div>
 </div>
 <div class="sheet-wrap"><section id="sheet" class="sheet"></section></div>
@@ -88,6 +88,13 @@ function renderSheet(d){const mpos=[d.positions.m1,d.positions.m2,d.positions.m3
  <div class="brand"><div class="qrs"><div class="qr-card"><div class="qr-title">ゆきこ</div><div class="qr-pair"><img class="qr-character yukiko" src="YUKIKO.PNG" alt="ゆきこ"><div class="qr-crop"><img src="QR_YUKIKO.jpg" alt="ゆきこ Instagram QR"></div></div><span class="handle">@YUKIKO_1884</span></div><div class="qr-card"><div class="qr-title">369イベント</div><div class="qr-pair"><img class="qr-character mid" src="MIROKUMAN.PNG" alt="みろくまん"><div class="qr-crop"><img src="QR_369.jpg" alt="369EVENT Instagram QR"></div></div><span class="handle">@369EVENT</span></div><div class="qr-card"><div class="qr-title">うめこ</div><div class="qr-pair"><img class="qr-character" src="UMEKO.PNG" alt="うめこ"><div class="qr-crop"><img src="QR_UMEKO.jpg" alt="うめこ Instagram QR"></div></div><span class="handle">@UMEKO.DAYO</span></div></div><div class="notes">数秘運気は、みろく流固定式（誕生日起点・日付全桁を一括加算・11/22採用）で算出。九星気学は立春・各月の節入りを基準にしています。占術上の傾向をもとにした鑑定であり、未来の出来事を保証するものではありません。</div></div>`;
 }
 function showSheet(){document.getElementById('sheet').classList.add('show');document.getElementById('sheet').scrollIntoView({behavior:'smooth'});}
+function printSheet(){
+  const sheet=document.getElementById('sheet');
+  if(!window.reading){alert('先に鑑定書を作ってな');return;}
+  sheet.classList.add('show');
+  // iPhone/Safariでも印刷ダイアログが開きやすいよう、描画完了後に実行
+  requestAnimationFrame(()=>{requestAnimationFrame(()=>{setTimeout(()=>{window.print();},120);});});
+}
 function esc(s){return s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function loadUmeko(){document.getElementById('name').value='うめこ';document.getElementById('birth').value='1976-10-15';document.getElementById('override').value='6';makeReading();}
 </script>
