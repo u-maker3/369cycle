@@ -37,15 +37,20 @@ const assetNames=['YUKIKO.PNG','MIROKUMAN.PNG','UMEKO.PNG','QR_YUKIKO.jpg','QR_3
 function drawContain(img,x,y,w,h){if(!img)return;let r=Math.min(w/img.naturalWidth,h/img.naturalHeight),iw=img.naturalWidth*r,ih=img.naturalHeight*r;ctx.drawImage(img,x+(w-iw)/2,y+(h-ih)/2,iw,ih)}
 function drawQR(img,x,y,size){if(!img)return; // QR image contains Instagram framing: crop central code, retain quiet zone
 const sw=img.naturalWidth,sh=img.naturalHeight;const crop=Math.min(sw,sh)*0.53;const sx=(sw-crop)/2,sy=sh*0.39-crop/2;ctx.fillStyle='#fff';ctx.fillRect(x-5,y-5,size+10,size+10);ctx.drawImage(img,sx,Math.max(0,sy),crop,crop,x,y,size,size)}
-function render(d){ctx.fillStyle='#ffffff';ctx.fillRect(0,0,W,H);rounded(46,45,1148,155,20,'#ffffff');fill('みろく流  季節の運気だより',80,99,25,'#90715b',true);fill(`2027年、${d.name}へのメッセージ`,80,151,43,'#3c352f',true);fill(`${d.name} 様   ｜   1月・2月・3月号`,82,188,22,'#786d65');
+function render(d){ctx.fillStyle='#ffffff';ctx.fillRect(0,0,W,H);rounded(46,45,1148,155,20,'#ffffff');fill('みろく流  季節の運気だより',80,99,25,'#90715b',true);fill(`${d.name}さんへのメッセージ`,80,151,43,'#3c352f',true);fill(`${d.name} 様   ｜   1月・2月・3月号`,82,188,22,'#786d65');
 const year=themes[d.year],yearPal=palaceWords[d.p];fill('2027年のテーマ',70,259,28,'#92735e',true);fill(`「${year.t}」`,70,317,43,'#493b34',true);
 let annual=fusion(year,yearPal);if(d.year!==d.yearEnd){const [by,bm,bd]=d.date.split('-').map(Number);annual+=` ${bm}月${bd}日の誕生日からは「${themes[d.yearEnd].t}」という新しいテーマへ。少しずつ気持ちを切り替えていきましょう。`}
 wrap(annual,72,372,1090,29,45);ctx.strokeStyle='#eaded3';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(70,525);ctx.lineTo(1170,525);ctx.stroke();
 const monthStarts=[565,829,1093];d.months.forEach((m,i)=>{let y=monthStarts[i],n=themes[m.n],p=palaceWords[m.p];rounded(60,y,1120,242,18,'#ffffff');ctx.strokeStyle='#ded8d2';ctx.lineWidth=2;ctx.strokeRect(60,y,1120,242);fill(`${m.m}月`,84,y+54,38,'#775e4d',true);fill(n.t,216,y+54,33,'#453c35',true);let msg=`${n.a} ${p.s.split("。")[0]}。`;if(m.n!==m.endN){const bd=Number(d.date.slice(8));msg+=` 誕生日の${bd}日からは、少し違う流れも重なります。`}wrap(msg,86,y+109,1060,27,39);fill(`今月の一歩：${p.action}`,86,y+210,25,'#72806a',true)});
-rounded(60,1362,1120,103,14,'#ffffff');fill('みろく流から、最後にひと言',85,1402,27,'#8e685b',true);fill('この3か月の歩みが、次の季節のあなたを支えてくれますように。',85,1441,25,'#493d37');
+const closing=[
+'小さな積み重ねも、ちゃんと未来につながっています。自分の歩幅を大切にね。',
+'今すぐ答えが見つからなくても大丈夫。あなたらしい道を、ゆっくり選んでいきましょう。',
+'ここまで歩いてきた自分を、どうか認めてあげてね。次の季節も、あなたらしく。'
+][d.year%3];
+rounded(60,1362,1120,103,14,'#ffffff');fill('みろくから最後にひと言',85,1402,27,'#8e685b',true);wrap(closing,85,1441,1060,24,31,'#493d37');
 ctx.strokeStyle='#e5d6ca';ctx.beginPath();ctx.moveTo(60,1492);ctx.lineTo(1180,1492);ctx.stroke();
 const xs=[76,465,854];[['YUKIKO.PNG','QR_YUKIKO.jpg','ゆきこ'],['MIROKUMAN.PNG','QR_369.jpg','369イベント'],['UMEKO.PNG','QR_UMEKO.jpg','うめこ']].forEach((a,i)=>{const x=xs[i];drawContain(images[a[0]],x,1512,122,150);drawQR(images[a[1]],x+144,1542,96);fill(a[2],x+147,1665,21,'#6b5b52',true)});
-fill('数秘術と九星気学をもとにした、みろく流の季節のメッセージです。未来を保証するものではありません。',62,1720,17,'#82766e');}
+fill('うめこの脳みそと、ゆきこの脳みそ。ふたつの視点が合わさった、みろく流の季節のメッセージ。',62,1695,18,'#82766e');fill('次の季節のメッセージをご希望の方は、InstagramのDMから直接ご連絡ください。',62,1723,18,'#82766e');}
 async function run(){const date=$('birthday').value,name=$('person').value.trim()||'お客さま';if(!date){alert('生年月日を入力してな');return}const ov=Number($('override').value)||0,d=makeData(name,date,ov);if(d.h.uncertain&&!ov){$('alert').textContent='立春前後の生まれ（2月3日・4日）は出生時刻による確認が必要です。本命星を資料で確認し、手動選択してください。';$('alert').classList.remove('hidden');$('result').classList.add('hidden');return}$('alert').classList.add('hidden');$('check').textContent=`管理用検算（印刷画像には出ません）｜本命星：${['','一白','二黒','三碧','四緑','五黄','六白','七赤','八白','九紫'][d.star]}｜年運 ${d.year} → ${d.yearEnd}｜1〜3月 ${d.months.map(m=>m.n+(m.n!==m.endN?'→'+m.endN:'')).join('・')}｜回座 年 ${d.p}／月 ${d.months.map(m=>m.p).join('・')}`;await loadAssets();render(d);$('result').classList.remove('hidden');$('saveArea').classList.add('hidden');$('result').scrollIntoView({behavior:'smooth'});}
 $('generate').addEventListener('click',run);$('sample').addEventListener('click',()=>{$('person').value='うめこ';$('birthday').value='1976-10-15';$('override').value='';run()});$('save').addEventListener('click',()=>{let url=canvas.toDataURL('image/png');$('saveImg').src=url;$('saveArea').classList.remove('hidden');const a=document.createElement('a');a.href=url;a.download='みろく流_2027年運気だより.PNG';document.body.appendChild(a);a.click();a.remove();});
 </script></body></html>
